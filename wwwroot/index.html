@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Forms</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Custom Forms</h1>
+        <div id="form-list"></div>
+        <button id="create-form-btn">Create New Form</button>
+    </div>
+
+    <!-- Modal for Creating/Updating Form -->
+    <div id="form-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Create Form</h2>
+            <form id="custom-form">
+                <input type="hidden" id="form-id">
+                <label for="form-title">Title</label>
+                <input type="text" id="form-title" required>
+                <label for="form-description">Description</label>
+                <textarea id="form-description" required></textarea>
+                <div id="fields-container">
+                    <!-- Fields will be added here dynamically -->
+                </div>
+                <button type="button" id="add-field-btn">Add Field</button>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const formList = document.getElementById('form-list');
+            const createFormBtn = document.getElementById('create-form-btn');
+            const formModal = document.getElementById('form-modal');
+            const closeModal = document.getElementsByClassName('close')[0];
+            const customForm = document.getElementById('custom-form');
+            const fieldsContainer = document.getElementById('fields-container');
+            const addFieldBtn = document.getElementById('add-field-btn');
+            const formTitle = document.getElementById('form-title');
+            const formDescription = document.getElementById('form-description');
+            const formId = document.getElementById('form-id');
+            const modalTitle = document.getElementById('modal-title');
+
+            let currentFormId = null;
+
+            // Open modal
+            createFormBtn.onclick = () => {
+                formId.value = '';
+                formTitle.value = '';
+                formDescription.value = '';
+                fieldsContainer.innerHTML = '';
+                modalTitle.textContent = 'Create Form';
+                formModal.style.display = 'block';
+            };
+
+            // Close modal
+            closeModal.onclick = () => {
+                formModal.style.display = 'none';
+            };
+
+            // Close modal when clicking outside
+            window.onclick = (event) => {
+                if (event.target == formModal) {
+                    formModal.style.display = 'none';
+                }
+            };
+
+            // Add new field
+            addFieldBtn.onclick = () => {
+                if (fieldsContainer.children.length >= 10) {
+                    alert('Maximum 10 fields allowed.');
+                    return;
+                }
+                addField('', '');
+            };
+
+            // Function to add a field
+            function addField(name, value) {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'field';
+                fieldDiv.innerHTML = `
+                    <input type="text" placeholder="Field Name" value="${name}" required>
+                    <input type="number" placeholder="Field Value" value="${value}" required>
+                    <button type="button">Remove</button>
+                `;
+                fieldDiv.querySelector('button').onclick = () => fieldDiv.remove();
+                fieldsContainer.appendChild(fieldDiv);
+            }
+
+            // Submit form
+            customForm.onsubmit = async (event) => {
+                event.preventDefault();
+                const fields = Array.from(fieldsContainer.children).map(fieldDiv => ({
+                    name: fieldDiv.querySelector('input[type="text"]:nth-child(1)').value.trim(),
+                    value: fieldDiv.querySelector('input[type="number"]:nth-child(2)').value.trim()
+                }));
+
+                const form = {
+                    title: formTitle.value.trim(),
+                    description: formDescription.value.trim(),
+                    fields: fields
+                };
+
+                if (formId.value) {
+                    form.id = formId.value;
+                    await updateForm(formId.value, form);
+                } else {
+                    await createForm(form);
+                }
+
+                formModal.style.display = 'none';
+                loadForms();
+            };
+
+            // Load forms from the server
+            async function loadForms() {
+                const response = await fetch('/api/forms');
+                const forms = await response.json();
+                formList.innerHTML = forms.map(form => `
+                    <div class="form-item">
+                        <h3>${form.title}</h3>
+                        <p>${form.description}</p>
+                        <p>Created: ${new Date(form.dateCreated).toLocaleString()}</p>
+                        <p>Updated: ${new Date(form.dateUpdated).toLocaleString()}</p>
+                        <button onclick="editForm(${form.id})">Edit</button>
+                        <button onclick="deleteForm(${form.id})">Delete</button>
+                    </div>
+                `).join('');
+                addDeleteButtonListeners();
+            }
+
+            // Add event listeners to delete buttons
+            function addDeleteButtonListeners() {
+                const deleteButtons = document.querySelectorAll('.form-item button:nth-child(4)');
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const formId = button.getAttribute('onclick').match(/\d+/)[0];
+                        deleteForm(formId);
+                    });
+                });
+            }
+
+            // Create form
+            async function createForm(form) {
+                await fetch('/api/forms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(form)
+                });
+            }
+
+            // Update form
+            async function updateForm(id, form) {
+                await fetch(`/api/forms/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(form)
+                });
+            }
+
+            // Edit form
+            window.editForm = async (id) => {
+                const response = await fetch(`/api/forms/${id}`);
+                const form = await response.json();
+
+                formId.value = form.id;
+                formTitle.value = form.title;
+                formDescription.value = form.description;
+                fieldsContainer.innerHTML = '';
+                form.fields.forEach(field => addField(field.name, field.value));
+
+                modalTitle.textContent = 'Edit Form';
+                formModal.style.display = 'block';
+            };
+
+            // Delete form
+            window.deleteForm = async (id) => {
+                await fetch(`/api/forms/${id}`, {
+                    method: 'DELETE'
+                });
+                loadForms();
+            };
+
+            // Initial load
+            loadForms();
+        });
+    </script>
+</body>
+</html>

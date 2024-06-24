@@ -1,0 +1,77 @@
+{
+  "Version": 1,
+  "Hash": "8VYRzkchjzrNp9GrH5ugSrIR29Jd4WwsWPUA1j6MFo8=",
+  "Source": "CustomFormsApp",
+  "BasePath": "_content/CustomFormsApp",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "CustomFormsApp\\wwwroot",
+      "Source": "CustomFormsApp",
+      "ContentRoot": "C:\\Users\\georg\\CustomFormsApp\\wwwroot\\",
+      "BasePath": "_content/CustomFormsApp",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\georg\\CustomFormsApp\\wwwroot\\css\\styles.css",
+      "SourceId": "CustomFormsApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\georg\\CustomFormsApp\\wwwroot\\",
+      "BasePath": "_content/CustomFormsApp",
+      "RelativePath": "css/styles.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\styles.css"
+    },
+    {
+      "Identity": "C:\\Users\\georg\\CustomFormsApp\\wwwroot\\index.html",
+      "SourceId": "CustomFormsApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\georg\\CustomFormsApp\\wwwroot\\",
+      "BasePath": "_content/CustomFormsApp",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\georg\\CustomFormsApp\\wwwroot\\js\\scripts.js",
+      "SourceId": "CustomFormsApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\georg\\CustomFormsApp\\wwwroot\\",
+      "BasePath": "_content/CustomFormsApp",
+      "RelativePath": "js/scripts.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\scripts.js"
+    }
+  ]
+}
